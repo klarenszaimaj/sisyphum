@@ -11,7 +11,7 @@ import { db } from '../db/db'
 import type { Blocco } from '../db/tipi'
 import ContenutoBlocco from '../components/ContenutoBlocco'
 import Dialogo from '../components/Dialogo'
-import FormBlocco from '../components/FormBlocco'
+import FinestraBlocco, { type Apertura } from '../components/FinestraBlocco'
 import StrumentiSviluppo from '../components/StrumentiSviluppo'
 import { eseguiCopia, preparaCopia, type PianoCopia } from '../db/copiaSettimana'
 import RiepilogoCopia from '../components/RiepilogoCopia'
@@ -23,11 +23,6 @@ interface Intervallo {
 }
 
 // Stato della finestra: chiusa, nuovo blocco (con orari proposti) o modifica
-type Apertura =
-    | { modo: 'nuovo'; inizio: number; fine: number }
-    | { modo: 'modifica'; blocco: Blocco }
-    | { modo: 'duplica'; blocco: Blocco }
-    | null
 
 const ORA = 60 * 60 * 1000
 const stileBottone = 'rounded-lg border border-bordo px-3 py-1.5 text-sm font-medium hover:bg-hover'
@@ -213,31 +208,13 @@ export default function SettimanaPage() {
                 />
             </div>
 
-            <Dialogo
-                aperto={apertura !== null}
-                onChiudi={chiudi}
-                titolo={
-                    apertura?.modo === 'modifica' ? 'Modifica blocco'
-                        : apertura?.modo === 'duplica' ? 'Duplica blocco'
-                            : 'Nuovo blocco'
-                }
-            >
-                {apertura !== null && (
-                    <FormBlocco
-                        key={apertura.modo === 'nuovo' ? `nuovo-${apertura.inizio}` : `${apertura.modo}-${apertura.blocco.id}`}
-                        blocco={apertura.modo === 'modifica' ? apertura.blocco : undefined}
-                        modello={apertura.modo === 'duplica' ? apertura.blocco : undefined}
-                        inizio={apertura.modo === 'nuovo' ? apertura.inizio : apertura.blocco.inizio}
-                        fine={apertura.modo === 'nuovo' ? apertura.fine : apertura.blocco.fine}
-                        materie={materie ?? []}
-                        onFatto={chiudi}
-                        onDuplica={
-                            apertura.modo === 'modifica'
-                                ? () => setApertura({ modo: 'duplica', blocco: apertura.blocco })
-                                : undefined
-                        }
-                    />
-                )}
+            <Dialogo>
+            <FinestraBlocco
+        apertura={apertura}
+        setApertura={setApertura}
+        materie={materie ?? []}
+        onChiudi={chiudi}
+      />
       </Dialogo>
 
       <Dialogo
