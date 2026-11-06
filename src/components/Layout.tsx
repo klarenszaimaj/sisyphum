@@ -1,6 +1,5 @@
 import { NavLink, Outlet } from 'react-router'
-import { BookOpen, CalendarCheck, CalendarDays, Moon, Sun } from 'lucide-react'
-import { useTema } from '../hooks/useTema'
+import { BookOpen, CalendarCheck, CalendarDays, Settings } from 'lucide-react'
 import SfondoCielo from './SfondoCielo'
 
 // Le voci di navigazione: definite una volta, usate in entrambe le barre
@@ -8,14 +7,10 @@ const voci = [
   { to: '/oggi', label: 'Oggi', Icona: CalendarCheck },
   { to: '/settimana', label: 'Settimana', Icona: CalendarDays },
   { to: '/materie', label: 'Materie', Icona: BookOpen },
+  { to: '/impostazioni', label: 'Impostazioni', Icona: Settings },
 ]
 
 export default function Layout() {
-  const { scuro, cambia } = useTema()
-  // L'icona mostra dove andrai: sole = passa a Giorno, luna = passa a Notte
-  const IconaTema = scuro ? Sun : Moon
-  const etichettaTema = scuro ? 'Tema Giorno' : 'Tema Notte'
-
   return (
     // "isolate" crea un livello proprio: il cielo (-z-10) resta dietro ma visibile
     <div className="relative isolate min-h-dvh text-testo lg:flex">
@@ -46,16 +41,6 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-
-        {/* mt-auto spinge il pulsante in fondo alla barra */}
-        <button
-          type="button"
-          onClick={cambia}
-          className="mt-auto flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-testo-tenue transition-colors hover:bg-hover"
-        >
-          <IconaTema size={18} />
-          {etichettaTema}
-        </button>
       </aside>
 
       {/* Contenuto della pagina corrente */}
@@ -79,15 +64,6 @@ export default function Layout() {
             {label}
           </NavLink>
         ))}
-        <button
-          type="button"
-          onClick={cambia}
-          aria-label={etichettaTema}
-          className="flex flex-1 flex-col items-center gap-1 py-3 text-xs font-medium text-testo-tenue"
-        >
-          <IconaTema size={22} />
-          Tema
-        </button>
       </nav>
     </div>
   )

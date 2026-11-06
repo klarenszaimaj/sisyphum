@@ -1,21 +1,20 @@
 import { useState } from 'react'
 
-// Gestisce il tema: legge lo stato attuale, lo cambia e lo ricorda
+// Gestisce il tema: legge lo stato attuale, lo imposta e lo ricorda
 export function useTema() {
   const [scuro, setScuro] = useState(() =>
     document.documentElement.classList.contains('dark'),
   )
 
-  function cambia() {
-    const nuovo = !scuro
-    document.documentElement.classList.toggle('dark', nuovo)
+  function imposta(valore: boolean) {
+    document.documentElement.classList.toggle('dark', valore)
     try {
-      localStorage.setItem('tema', nuovo ? 'scuro' : 'chiaro')
+      localStorage.setItem('tema', valore ? 'scuro' : 'chiaro')
     } catch {
       // se il salvataggio non è possibile, il tema vale solo per questa sessione
     }
-    setScuro(nuovo)
+    setScuro(valore)
   }
 
-  return { scuro, cambia }
+  return { scuro, imposta }
 }
