@@ -54,3 +54,35 @@ body {
     radial-gradient(ellipse 70% 55% at 10% 0%, var(--cielo-b), transparent 70%),
     radial-gradient(ellipse 60% 50% at 100% 100%, var(--cielo-a), transparent 70%);
 }
+/* ---------- FullCalendar con i nostri colori ---------- */
+.fc {
+  --fc-border-color: var(--color-bordo);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-today-bg-color: color-mix(in srgb, var(--color-accento) 7%, transparent);
+  --fc-now-indicator-color: var(--color-neon);
+  --fc-event-bg-color: transparent;
+  --fc-event-border-color: transparent;
+  --fc-event-text-color: var(--color-testo);
+  font-size: 0.8125rem;
+}
+.fc .fc-col-header-cell-cushion {
+  padding: 6px 2px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.fc .fc-timegrid-slot-label-cushion {
+  color: var(--color-testo-tenue);
+}
+.fc .fc-day-today .fc-col-header-cell-cushion {
+  color: var(--color-accento);
+}
+/* La linea dell'ora attuale: uno dei pochi tocchi di neon */
+.fc .fc-timegrid-now-indicator-line {
+  border-width: 2px 0 0;
+  box-shadow: 0 0 8px var(--color-neon);
+}
+.fc .fc-scrollgrid {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
