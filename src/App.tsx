@@ -1,7 +1,19 @@
+import { Navigate, Route, Routes } from 'react-router'
+import Layout from './components/Layout'
+import OggiPage from './pages/OggiPage'
+import SettimanaPage from './pages/SettimanaPage'
+import MateriePage from './pages/MateriePage'
+
 export default function App() {
   return (
-    <div className="min-h-screen grid place-items-center bg-slate-100">
-      <h1 className="text-4xl font-semibold text-rose-600">StudyFlow</h1>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Navigate to="/oggi" replace />} />
+        <Route path="oggi" element={<OggiPage />} />
+        <Route path="settimana" element={<SettimanaPage />} />
+        <Route path="materie" element={<MateriePage />} />
+        <Route path="*" element={<Navigate to="/oggi" replace />} />
+      </Route>
+    </Routes>
   )
 }
