@@ -14,6 +14,7 @@
   --color-accento: #5b3fd1;
   --color-accento-tenue: rgb(91 63 209 / 0.10);
   --color-neon: #7c3aed;
+  --color-pannello: #ffffff;
 }
 
 /* Tema NOTTE: stessi nomi, altri valori */
@@ -27,6 +28,7 @@
   --color-accento: #c4b5fd;
   --color-accento-tenue: rgb(167 139 250 / 0.14);
   --color-neon: #b26bff;
+  --color-pannello: #13152e;
 }
 
 /* Sfumature del cielo: non servono come classi, quindi stanno fuori da @theme */
