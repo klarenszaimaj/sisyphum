@@ -11,7 +11,7 @@ export default defineConfig({
     VitePWA({
       // Quando pubblichi una versione nuova, l'app si aggiorna da sola alla riapertura
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icona.png'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
         name: 'Sisyphum',
         short_name: 'Sisyphum',
@@ -32,6 +32,7 @@ export default defineConfig({
       workbox: {
         // Tutti i file dell'app vengono salvati dal service worker: così funziona offline
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        globIgnores: ['icona.png']
       },
     }),
   ],

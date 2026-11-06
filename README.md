@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <strong>Live:</strong> <em>link coming soon</em> · English · <a href="README.it.md">Italiano</a>
+  <strong>Live:</strong> <a href="https://sisyphum.netlify.app">sisyphum.netlify.app</a> · English · <a href="README.it.md">Italiano</a>
 </p>
 
 ## Why I built this
