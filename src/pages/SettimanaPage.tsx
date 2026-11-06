@@ -5,9 +5,12 @@ import interactionPlugin from '@fullcalendar/interaction'
 import itLocale from '@fullcalendar/core/locales/it'
 import type { DatesSetArg, EventInput } from '@fullcalendar/core'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { db } from '../db/db'
+import type { Blocco } from '../db/tipi'
 import ContenutoBlocco from '../components/ContenutoBlocco'
+import Dialogo from '../components/Dialogo'
+import FormBlocco from '../components/FormBlocco'
 import StrumentiSviluppo from '../components/StrumentiSviluppo'
 
 interface Intervallo {
@@ -16,11 +19,40 @@ interface Intervallo {
   titolo: string
 }
 
+// Stato della finestra: chiusa, nuovo blocco (con orari proposti) o modifica
+type Apertura =
+  | { modo: 'nuovo'; inizio: number; fine: number }
+  | { modo: 'modifica'; blocco: Blocco }
+  | null
+
+const ORA = 60 * 60 * 1000
 const stileBottone = 'rounded-lg border border-bordo px-3 py-1.5 text-sm font-medium hover:bg-hover'
+
+// Orario proposto dal pulsante "+ Blocco": oggi alla prossima mezz'ora
+// se stai guardando la settimana corrente, altrimenti lunedì alle 9:00
+function orarioProposto(intervallo: Intervallo | null) {
+  const adesso = new Date()
+  const settimanaCorrente =
+    intervallo !== null &&
+    adesso.getTime() >= intervallo.inizio &&
+    adesso.getTime() < intervallo.fine
+
+  let inizio: Date
+  if (settimanaCorrente && adesso.getHours() >= 8 && adesso.getHours() < 19) {
+    inizio = new Date(adesso)
+    inizio.setMinutes(adesso.getMinutes() < 30 ? 30 : 60, 0, 0)
+  } else {
+    inizio = new Date(settimanaCorrente ? adesso : (intervallo?.inizio ?? adesso))
+    if (settimanaCorrente && adesso.getHours() >= 19) inizio.setDate(inizio.getDate() + 1)
+    inizio.setHours(9, 0, 0, 0)
+  }
+  return { inizio: inizio.getTime(), fine: inizio.getTime() + 2 * ORA }
+}
 
 export default function SettimanaPage() {
   const calendario = useRef<FullCalendar>(null)
   const [intervallo, setIntervallo] = useState<Intervallo | null>(null)
+  const [apertura, setApertura] = useState<Apertura>(null)
 
   const materie = useLiveQuery(() => db.materie.toArray())
 
@@ -57,6 +89,11 @@ export default function SettimanaPage() {
 
   const api = () => calendario.current?.getApi()
 
+  function chiudi() {
+    setApertura(null)
+    api()?.unselect() // toglie l'evidenziazione della selezione
+  }
+
   return (
     // Altezza = schermo meno la barra in basso; su schermi larghi tutto lo schermo
     <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-3 p-3 lg:h-dvh lg:p-6">
@@ -65,6 +102,14 @@ export default function SettimanaPage() {
           {intervallo?.titolo ?? 'Settimana'}
         </h1>
         <StrumentiSviluppo />
+        <button
+          type="button"
+          onClick={() => setApertura({ modo: 'nuovo', ...orarioProposto(intervallo) })}
+          className="flex items-center gap-1.5 rounded-lg bg-neon px-3 py-1.5 text-sm font-medium text-white shadow-[0_0_16px_-4px_var(--color-neon)] hover:opacity-90"
+        >
+          <Plus size={16} />
+          Blocco
+        </button>
         <button type="button" className={stileBottone} onClick={() => api()?.today()}>
           Oggi
         </button>
@@ -111,8 +156,35 @@ export default function SettimanaPage() {
           events={eventi}
           eventContent={(arg) => <ContenutoBlocco arg={arg} />}
           datesSet={quandoCambianoLeDate}
+          // Creazione: trascina su uno spazio vuoto
+          selectable
+          selectMirror
+          select={(info) =>
+            setApertura({ modo: 'nuovo', inizio: info.start.getTime(), fine: info.end.getTime() })
+          }
+          // Modifica: clic su un blocco
+          eventClick={(info) =>
+            setApertura({ modo: 'modifica', blocco: info.event.extendedProps.blocco as Blocco })
+          }
         />
       </div>
+
+      <Dialogo
+        aperto={apertura !== null}
+        onChiudi={chiudi}
+        titolo={apertura?.modo === 'modifica' ? 'Modifica blocco' : 'Nuovo blocco'}
+      >
+        {apertura !== null && (
+          <FormBlocco
+            key={apertura.modo === 'modifica' ? apertura.blocco.id : `nuovo-${apertura.inizio}`}
+            blocco={apertura.modo === 'modifica' ? apertura.blocco : undefined}
+            inizio={apertura.modo === 'nuovo' ? apertura.inizio : apertura.blocco.inizio}
+            fine={apertura.modo === 'nuovo' ? apertura.fine : apertura.blocco.fine}
+            materie={materie ?? []}
+            onFatto={chiudi}
+          />
+        )}
+      </Dialogo>
     </div>
   )
 }

@@ -7,6 +7,14 @@ const GRIGIO = '#94a3b8'
 export default function ContenutoBlocco({ arg }: { arg: EventContentArg }) {
   const blocco = arg.event.extendedProps.blocco as Blocco
   const materia = arg.event.extendedProps.materia as Materia | undefined
+    // Anteprima durante la selezione: non esiste ancora un blocco
+  if (!blocco) {
+    return (
+      <div className="h-full rounded-md border border-dashed border-accento px-1.5 py-1 text-[11px] font-medium text-accento">
+        {arg.timeText}
+      </div>
+    )
+  }
 
   const colore = blocco.tipo === 'studio' ? (materia?.colore ?? GRIGIO) : GRIGIO
   const titolo =
