@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="cielo" cx="30%" cy="20%" r="90%">
+      <stop offset="0" stop-color="#1b1640"/>
+      <stop offset="1" stop-color="#070912"/>
+    </radialGradient>
+    <radialGradient id="pianeta" cx="35%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#7c6ad6"/>
+      <stop offset="0.45" stop-color="#3b2b80"/>
+      <stop offset="1" stop-color="#140f33"/>
+    </radialGradient>
+    <filter id="alone" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <!-- cielo -->
+  <rect width="512" height="512" fill="url(#cielo)"/>
+
+  <!-- stelle -->
+  <g fill="#ffffff" opacity="0.7">
+    <circle cx="92" cy="96" r="3"/>
+    <circle cx="430" cy="88" r="2.5"/>
+    <circle cx="70" cy="300" r="1.8"/>
+    <circle cx="140" cy="424" r="2"/>
+    <circle cx="384" cy="438" r="2"/>
+  </g>
+
+  <!-- alone viola -->
+  <circle cx="256" cy="268" r="118" fill="#9333ea" opacity="0.45" filter="url(#alone)"/>
+
+  <!-- anello: metà dietro il pianeta -->
+  <ellipse cx="256" cy="268" rx="190" ry="54" fill="none"
+           stroke="#c4b5fd" stroke-opacity="0.35" stroke-width="6"
+           transform="rotate(-18 256 268)"/>
+
+  <!-- pianeta -->
+  <circle cx="256" cy="268" r="104" fill="url(#pianeta)"/>
+
+  <!-- anello: metà davanti al pianeta -->
+  <path d="M 66 268 A 190 54 0 0 0 446 268" fill="none"
+        stroke="#c4b5fd" stroke-opacity="0.6" stroke-width="6" stroke-linecap="round"
+        transform="rotate(-18 256 268)"/>
+
+  <!-- luna -->
+  <circle cx="420" cy="195" r="11" fill="#e9d5ff"/>
+</svg>
