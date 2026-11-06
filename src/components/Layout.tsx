@@ -23,10 +23,13 @@ export default function Layout() {
 
       {/* Barra laterale: solo da 1024px in su */}
       <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-56 lg:flex-col lg:border-r lg:border-bordo lg:bg-superficie lg:p-4 lg:backdrop-blur-xl">
-        <div className="mb-8 flex items-center gap-2 px-3 text-lg font-semibold">
-          {/* Un unico punto neon: l'accento è dosato */}
-          <span className="size-2 rounded-full bg-neon shadow-[0_0_10px_var(--color-neon)]" />
-          StudyFlow
+                <div className="mb-8 flex items-center gap-3 px-2 text-lg font-semibold">
+          <img
+            src="/pwa-64x64.png"
+            alt=""
+            className="size-8 rounded-lg shadow-[0_0_14px_-4px_var(--color-neon)]"
+          />
+          Sisyphum
         </div>
         <nav className="flex flex-col gap-1">
           {voci.map(({ to, label, Icona }) => (

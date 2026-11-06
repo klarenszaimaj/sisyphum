@@ -1,0 +1,14 @@
+# Come Netlify costruisce e pubblica StudyFlow
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"   # la stessa versione che usi sul PC
+
+# App a pagina singola: qualsiasi indirizzo (/oggi, /settimana…) carica index.html,
+# poi è React Router a mostrare la pagina giusta
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

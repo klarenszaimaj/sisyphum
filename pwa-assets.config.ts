@@ -16,5 +16,5 @@ export default defineConfig({
       resizeOptions: { background: '#070912' },
     },
   },
-  images: ['public/icona.svg'],
+  images: ['public/icona.png'],
 })

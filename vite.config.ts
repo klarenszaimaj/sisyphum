@@ -11,10 +11,10 @@ export default defineConfig({
     VitePWA({
       // Quando pubblichi una versione nuova, l'app si aggiorna da sola alla riapertura
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icona.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icona.png'],
       manifest: {
-        name: 'StudyFlow',
-        short_name: 'StudyFlow',
+        name: 'Sisyphum',
+        short_name: 'Sisyphum',
         description: 'Planner personale per lo studio universitario',
         lang: 'it',
         start_url: '/',
