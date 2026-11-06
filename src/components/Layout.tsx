@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router'
-import { BookOpen, CalendarCheck, CalendarDays, Settings } from 'lucide-react'
+import { BookOpen, CalendarCheck, CalendarDays, Focus, Settings, Sparkles } from 'lucide-react'
 import SfondoCielo from './SfondoCielo'
+import { useAtmosfera } from '../hooks/useAtmosfera'
 
 // Le voci di navigazione: definite una volta, usate in entrambe le barre
 const voci = [
@@ -11,10 +12,14 @@ const voci = [
 ]
 
 export default function Layout() {
+  const { atmosfera, alterna } = useAtmosfera()
+  const inFocus = atmosfera === 'focus'
+  const IconaAtmosfera = inFocus ? Focus : Sparkles
+
   return (
     // "isolate" crea un livello proprio: il cielo (-z-10) resta dietro ma visibile
     <div className="relative isolate min-h-dvh text-testo lg:flex">
-      <SfondoCielo />
+            <SfondoCielo animato={!inFocus} />
 
       {/* Barra laterale: solo da 1024px in su */}
       <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-56 lg:flex-col lg:border-r lg:border-bordo lg:bg-superficie lg:p-4 lg:backdrop-blur-xl">
@@ -40,7 +45,21 @@ export default function Layout() {
               {label}
             </NavLink>
           ))}
-        </nav>
+               </nav>
+
+        {/* mt-auto spinge il pulsante in fondo alla barra */}
+        <button
+          type="button"
+          onClick={alterna}
+          aria-pressed={inFocus}
+          title={inFocus ? 'Torna ad Ambient' : 'Passa a Focus'}
+          className={`mt-auto flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+            inFocus ? 'bg-accento-tenue text-accento' : 'text-testo-tenue hover:bg-hover'
+          }`}
+        >
+          <IconaAtmosfera size={18} />
+          {inFocus ? 'Focus' : 'Ambient'}
+        </button>
       </aside>
 
       {/* Contenuto della pagina corrente */}
@@ -64,6 +83,17 @@ export default function Layout() {
             {label}
           </NavLink>
         ))}
+        <button
+          type="button"
+          onClick={alterna}
+          aria-pressed={inFocus}
+          className={`flex flex-1 flex-col items-center gap-1 py-3 text-xs font-medium ${
+            inFocus ? 'text-accento' : 'text-testo-tenue'
+          }`}
+        >
+          <IconaAtmosfera size={22} />
+          {inFocus ? 'Focus' : 'Ambient'}
+        </button>
       </nav>
     </div>
   )

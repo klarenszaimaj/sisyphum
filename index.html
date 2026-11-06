@@ -1,22 +1,32 @@
 <!doctype html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StudyFlow</title>
-        <script>
-      try {
-        
-        const scuro = localStorage.getItem('tema') !== 'chiaro';
-        document.documentElement.classList.toggle('dark', scuro);
-      } catch {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyFlow</title>
+  <script>
+    try {
+      // Notte è il predefinito: si passa al Giorno solo se l'hai scelto tu
+      const scuro = localStorage.getItem('tema') !== 'chiaro';
+      document.documentElement.classList.toggle('dark', scuro);
+
+      // Atmosfera: la tua scelta, altrimenti Focus se il sistema chiede meno movimento
+      const a = localStorage.getItem('atmosfera');
+      document.documentElement.dataset.atmosfera =
+        a === 'ambient' || a === 'focus' ? a
+          : matchMedia('(prefers-reduced-motion: reduce)').matches ? 'focus' : 'ambient';
+    } catch {
+      document.documentElement.classList.add('dark');
+      document.documentElement.dataset.atmosfera = 'ambient';
+    }
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
