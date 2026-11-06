@@ -6,13 +6,15 @@ import itLocale from '@fullcalendar/core/locales/it'
 import type { DatesSetArg, EventApi, EventInput } from '@fullcalendar/core'
 import { aggiornaBlocco } from '../db/blocchi'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, CopyPlus, Plus } from 'lucide-react'
 import { db } from '../db/db'
 import type { Blocco } from '../db/tipi'
 import ContenutoBlocco from '../components/ContenutoBlocco'
 import Dialogo from '../components/Dialogo'
 import FormBlocco from '../components/FormBlocco'
 import StrumentiSviluppo from '../components/StrumentiSviluppo'
+import { eseguiCopia, preparaCopia, type PianoCopia } from '../db/copiaSettimana'
+import RiepilogoCopia from '../components/RiepilogoCopia'
 
 interface Intervallo {
     inizio: number
@@ -55,6 +57,7 @@ export default function SettimanaPage() {
     const calendario = useRef<FullCalendar>(null)
     const [intervallo, setIntervallo] = useState<Intervallo | null>(null)
     const [apertura, setApertura] = useState<Apertura>(null)
+    const [pianoCopia, setPianoCopia] = useState<PianoCopia | null>(null)
 
     const materie = useLiveQuery(() => db.materie.toArray())
 
@@ -100,6 +103,17 @@ export default function SettimanaPage() {
             fine: event.end.getTime(),
         }).catch(() => info.revert()) // se il salvataggio fallisce, il blocco torna dov'era
     }
+    // Copia settimana: prima il riepilogo, poi la conferma
+    async function apriCopia() {
+        if (!intervallo) return
+        setPianoCopia(await preparaCopia(intervallo.inizio))
+    }
+
+    async function confermaCopia() {
+        if (!pianoCopia) return
+        await eseguiCopia(pianoCopia.inizioSettimana)
+        setPianoCopia(null)
+    }
     function chiudi() {
         setApertura(null)
         api()?.unselect() // toglie l'evidenziazione della selezione
@@ -120,6 +134,15 @@ export default function SettimanaPage() {
                 >
                     <Plus size={16} />
                     Blocco
+                </button>
+                <button
+                    type="button"
+                    className={`flex items-center gap-1.5 ${stileBottone}`}
+                    onClick={apriCopia}
+                    title="Copia la settimana precedente in questa"
+                >
+                    <CopyPlus size={16} />
+                    <span className="hidden sm:inline">Copia sett. precedente</span>
                 </button>
                 <button type="button" className={stileBottone} onClick={() => api()?.today()}>
                     Oggi
@@ -215,7 +238,21 @@ export default function SettimanaPage() {
                         }
                     />
                 )}
-            </Dialogo>
-        </div>
-    )
+      </Dialogo>
+
+      <Dialogo
+        aperto={pianoCopia !== null}
+        onChiudi={() => setPianoCopia(null)}
+        titolo="Copia settimana precedente"
+      >
+        {pianoCopia && (
+          <RiepilogoCopia
+            piano={pianoCopia}
+            onConferma={confermaCopia}
+            onAnnulla={() => setPianoCopia(null)}
+          />
+        )}
+      </Dialogo>
+    </div>
+  )
 }
