@@ -21,7 +21,7 @@ export default function ImpostazioniPage() {
   async function esporta() {
     try {
       const b = await scaricaBackup()
-            setTestoUltimo(descriviUltimoBackup(Date.now()))
+      setTestoUltimo(descriviUltimoBackup(Date.now()))
       setMessaggio({
         tipo: 'ok',
         testo: `Backup scaricato: ${b.materie.length} materie, ${b.blocchi.length} blocchi.`,
@@ -75,8 +75,8 @@ export default function ImpostazioniPage() {
               type="button"
               onClick={() => imposta(valore)}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${scuro === valore
-                  ? 'bg-accento-tenue text-accento'
-                  : 'text-testo-tenue hover:bg-hover'
+                ? 'bg-accento-tenue text-accento'
+                : 'text-testo-tenue hover:bg-hover'
                 }`}
             >
               <Icona size={16} />
@@ -93,6 +93,8 @@ export default function ImpostazioniPage() {
           I dati sono salvati solo su questo dispositivo. Esporta un backup di
           tanto in tanto e conservalo al sicuro, per esempio su Google Drive.
         </p>
+        <p className="mt-2 text-sm font-medium">{testoUltimo}</p>
+        
 
         <div className="mt-4 flex flex-wrap gap-3">
           <button
@@ -124,8 +126,8 @@ export default function ImpostazioniPage() {
         {messaggio && (
           <p
             className={`mt-4 text-sm ${messaggio.tipo === 'ok'
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-rose-600 dark:text-rose-400'
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : 'text-rose-600 dark:text-rose-400'
               }`}
           >
             {messaggio.testo}
