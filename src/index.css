@@ -86,3 +86,18 @@ body {
   border-radius: 0.75rem;
   overflow: hidden;
 }
+/* Blocco evidenziato dalla pressione prolungata (touch) */
+.fc .fc-event-selected {
+  box-shadow: 0 0 0 2px var(--color-accento);
+  border-radius: 6px;
+}
+/* Blocco mentre lo trascini */
+.fc .fc-event-mirror {
+  opacity: 0.85;
+}
+/* Su schermi touch: maniglia di ridimensionamento più alta, più facile da prendere */
+@media (pointer: coarse) {
+  .fc .fc-timegrid-event .fc-event-resizer-end {
+    height: 16px;
+  }
+}

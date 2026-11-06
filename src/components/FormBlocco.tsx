@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react'
 import { format, parse } from 'date-fns'
-import { Trash2 } from 'lucide-react'
+import { Copy, Trash2 } from 'lucide-react'
 import type { Blocco, Materia, StatoBlocco, TipoBlocco } from '../db/tipi'
 import { aggiornaBlocco, creaBlocco, eliminaBlocco } from '../db/blocchi'
 
 interface Props {
   blocco?: Blocco // assente = nuovo blocco
+  modello?: Blocco // per duplicare: blocco da cui copiare i valori
+  onDuplica?: () => void
   inizio: number // orari proposti per un blocco nuovo
   fine: number
   materie: Materia[]
@@ -59,19 +61,21 @@ function Segmenti<T extends string>(props: {
   )
 }
 
-export default function FormBlocco({ blocco, inizio, fine, materie, onFatto }: Props) {
+export default function FormBlocco({ blocco, modello, inizio, fine, materie, onFatto, onDuplica }: Props) {
   const iniziale = blocco ?? { inizio, fine }
+  // Da dove prendere materia, obiettivo e note: il blocco in modifica o quello da duplicare
+  const origine = blocco ?? modello
 
   // Materie selezionabili: le attive, più quella attuale del blocco anche se archiviata
-  const scelte = materie.filter((m) => !m.archiviata || m.id === blocco?.materiaId)
+  const scelte = materie.filter((m) => !m.archiviata || m.id === origine?.materiaId)
 
-  const [tipo, setTipo] = useState<TipoBlocco>(blocco?.tipo ?? 'studio')
-  const [materiaId, setMateriaId] = useState(blocco?.materiaId ?? scelte[0]?.id ?? '')
+  const [tipo, setTipo] = useState<TipoBlocco>(origine?.tipo ?? 'studio')
+  const [materiaId, setMateriaId] = useState(origine?.materiaId ?? scelte[0]?.id ?? '')
   const [data, setData] = useState(comeData(iniziale.inizio))
   const [oraInizio, setOraInizio] = useState(comeOra(iniziale.inizio))
   const [oraFine, setOraFine] = useState(comeOra(iniziale.fine))
-  const [obiettivo, setObiettivo] = useState(blocco?.obiettivo ?? '')
-  const [note, setNote] = useState(blocco?.note ?? '')
+  const [obiettivo, setObiettivo] = useState(origine?.obiettivo ?? '')
+  const [note, setNote] = useState(origine?.note ?? '')
   const [stato, setStato] = useState<StatoBlocco>(blocco?.stato ?? 'pianificato')
   const [minuti, setMinuti] = useState(blocco?.minutiEffettivi ? String(blocco.minutiEffettivi) : '')
   const [errore, setErrore] = useState('')
@@ -216,14 +220,26 @@ export default function FormBlocco({ blocco, inizio, fine, materie, onFatto }: P
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
         {blocco && (
-          <button
-            type="button"
-            onClick={elimina}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-hover dark:text-rose-400"
-          >
-            <Trash2 size={16} />
-            Elimina
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={elimina}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-hover dark:text-rose-400"
+            >
+              <Trash2 size={16} />
+              Elimina
+            </button>
+            {onDuplica && (
+              <button
+                type="button"
+                onClick={onDuplica}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-testo-tenue hover:bg-hover"
+              >
+                <Copy size={16} />
+                Duplica
+              </button>
+            )}
+          </>
         )}
         <div className="ml-auto flex gap-2">
           <button
