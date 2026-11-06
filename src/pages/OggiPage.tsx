@@ -8,6 +8,7 @@ import { useAdesso } from '../hooks/useAdesso'
 import { formatoOre, minutiPianificati, minutiSvolti } from '../lib/ore'
 import SessioneOggi from '../components/SessioneOggi'
 import FinestraBlocco, { type Apertura } from '../components/FinestraBlocco'
+import PromemoriaBackup from '../components/PromemoriaBackup'
 
 const ORA = 60 * 60 * 1000
 const somma = (valori: number[]) => valori.reduce((a, b) => a + b, 0)
@@ -71,6 +72,8 @@ export default function OggiPage() {
           </p>
         )}
       </header>
+      
+      <PromemoriaBackup adesso={adesso} />
 
       {!caricamento && (
         <>

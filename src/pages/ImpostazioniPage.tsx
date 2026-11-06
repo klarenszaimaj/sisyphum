@@ -3,6 +3,7 @@ import { Download, Moon, Sun, Upload } from 'lucide-react'
 import { useTema } from '../hooks/useTema'
 import { db } from '../db/db'
 import { leggiBackup, ripristinaBackup, scaricaBackup } from '../db/backup'
+import { descriviUltimoBackup } from '../lib/promemoriaBackup'
 
 type Messaggio = { tipo: 'ok' | 'errore'; testo: string } | null
 
@@ -15,10 +16,12 @@ export default function ImpostazioniPage() {
   const { scuro, imposta } = useTema()
   const inputFile = useRef<HTMLInputElement>(null)
   const [messaggio, setMessaggio] = useState<Messaggio>(null)
+  const [testoUltimo, setTestoUltimo] = useState(() => descriviUltimoBackup(Date.now()))
 
   async function esporta() {
     try {
       const b = await scaricaBackup()
+            setTestoUltimo(descriviUltimoBackup(Date.now()))
       setMessaggio({
         tipo: 'ok',
         testo: `Backup scaricato: ${b.materie.length} materie, ${b.blocchi.length} blocchi.`,
@@ -43,8 +46,8 @@ export default function ImpostazioniPage() {
 
       const conferma = window.confirm(
         `Sostituire i dati attuali (${nMaterie} materie, ${nBlocchi} blocchi) ` +
-          `con il backup del ${data} (${backup.materie.length} materie, ${backup.blocchi.length} blocchi)?\n\n` +
-          `I dati attuali andranno persi: se vuoi conservarli, esporta prima un backup.`,
+        `con il backup del ${data} (${backup.materie.length} materie, ${backup.blocchi.length} blocchi)?\n\n` +
+        `I dati attuali andranno persi: se vuoi conservarli, esporta prima un backup.`,
       )
       if (!conferma) return
 
@@ -71,11 +74,10 @@ export default function ImpostazioniPage() {
               key={label}
               type="button"
               onClick={() => imposta(valore)}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                scuro === valore
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${scuro === valore
                   ? 'bg-accento-tenue text-accento'
                   : 'text-testo-tenue hover:bg-hover'
-              }`}
+                }`}
             >
               <Icona size={16} />
               {label}
@@ -121,11 +123,10 @@ export default function ImpostazioniPage() {
 
         {messaggio && (
           <p
-            className={`mt-4 text-sm ${
-              messaggio.tipo === 'ok'
+            className={`mt-4 text-sm ${messaggio.tipo === 'ok'
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-rose-600 dark:text-rose-400'
-            }`}
+              }`}
           >
             {messaggio.testo}
           </p>

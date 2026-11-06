@@ -1,5 +1,6 @@
 import { db } from './db'
 import type { Blocco, Materia } from './tipi'
+import { segnaBackupFatto } from '../lib/promemoriaBackup'
 
 export const VERSIONE_BACKUP = 1
 
@@ -35,6 +36,7 @@ function marcaTemporale(): string {
 }
 
 export async function scaricaBackup(): Promise<FileBackup> {
+
   const backup = await creaBackup()
   const testo = JSON.stringify(backup, null, 2)
   const blob = new Blob([testo], { type: 'application/json' })
@@ -47,6 +49,7 @@ export async function scaricaBackup(): Promise<FileBackup> {
   link.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 
+  segnaBackupFatto()
   return backup
 }
 
