@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/* "dark:" si attiva quando <html> ha la classe .dark (= tema Notte) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Colori con un nome: valori del tema GIORNO */
+@theme {
+  --color-sfondo: #f5f4fb;
+  --color-superficie: rgb(255 255 255 / 0.78);
+  --color-bordo: #e3e0f0;
+  --color-testo: #1b1a2e;
+  --color-testo-tenue: #6b6888;
+  --color-hover: rgb(91 63 209 / 0.06);
+  --color-accento: #5b3fd1;
+  --color-accento-tenue: rgb(91 63 209 / 0.10);
+  --color-neon: #7c3aed;
+}
+
+/* Tema NOTTE: stessi nomi, altri valori */
+.dark {
+  --color-sfondo: #070912;
+  --color-superficie: rgb(16 18 38 / 0.72);
+  --color-bordo: rgb(167 160 255 / 0.12);
+  --color-testo: #e7e5f7;
+  --color-testo-tenue: #9b99bb;
+  --color-hover: rgb(167 139 250 / 0.08);
+  --color-accento: #c4b5fd;
+  --color-accento-tenue: rgb(167 139 250 / 0.14);
+  --color-neon: #b26bff;
+}
+
+/* Sfumature del cielo: non servono come classi, quindi stanno fuori da @theme */
+:root {
+  --cielo-a: rgb(124 58 237 / 0.08);
+  --cielo-b: rgb(79 70 229 / 0.06);
+}
+.dark {
+  --cielo-a: rgb(147 51 234 / 0.22);
+  --cielo-b: rgb(67 56 202 / 0.20);
+}
+
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+body {
+  background-color: var(--color-sfondo);
+}
+
+/* Strato del cielo: per ora statico, dopo ospiterà stelle e pianeta */
+.sfondo-cielo {
+  background:
+    radial-gradient(ellipse 70% 55% at 10% 0%, var(--cielo-b), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, var(--cielo-a), transparent 70%);
+}
